@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:products_app/providers/login_form_provider.dart';
 import 'package:products_app/ui/Input_decorations.dart';
 import 'package:products_app/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
    
@@ -8,21 +10,27 @@ class LoginScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body:AuthBackground(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 250,),
+              SizedBox(height: size.height*0.25,),
               CardContainer(
                 child: Column(
                   children: [
                     SizedBox(height: 10,),
                     Text('Login', style: Theme.of(context).textTheme.headline4,),
                     SizedBox(height: 30,),
-
-                    _LoginForm()
+                    
+                    ChangeNotifierProvider(
+                      create: (context) => LoginFormProvider(),
+                      child: _LoginForm(),
+                    )
                   ],
                 )
               ),
@@ -42,10 +50,14 @@ class _LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final loginForm = Provider.of<LoginFormProvider>(context);
+
     return Container(
       child: Form(
         //TODO: mantener la referencia al KEY
         autovalidateMode: AutovalidateMode.onUserInteraction,
+        key: loginForm.formKey,
 
         child: Column(
           children: [
@@ -53,6 +65,7 @@ class _LoginForm extends StatelessWidget {
               autocorrect: false,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecorations.authInputDecoration(hintText: 'Email', labelText: 'Correo electronico', prefixIcon: Icons.alternate_email_sharp),
+              onChanged: (value) => loginForm.email = value,
               validator: (value) {
                 String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
                 RegExp regExp  = new RegExp(pattern);
@@ -68,6 +81,7 @@ class _LoginForm extends StatelessWidget {
               obscureText: true,
               obscuringCharacter: '*',
               decoration: InputDecorations.authInputDecoration(hintText: '****', labelText: 'Contraseña', prefixIcon: Icons.lock),
+              onChanged: (value) => loginForm.password = value,
               validator: (value) {
                 return(value!=null && value.length>=6) 
                 ? null
@@ -94,6 +108,9 @@ class _LoginForm extends StatelessWidget {
               ),
               onPressed: () {
                 //TODO: login form
+                if(!loginForm.isValidForm()) return;
+
+                Navigator.pushNamed(context, 'home');
               },
             ),
             SizedBox(height: 30,),
