@@ -45,20 +45,37 @@ class _LoginForm extends StatelessWidget {
     return Container(
       child: Form(
         //TODO: mantener la referencia al KEY
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+
         child: Column(
           children: [
             TextFormField(
               autocorrect: false,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecorations.authInputDecoration(hintText: 'Email', labelText: 'Correo electronico', prefixIcon: Icons.alternate_email_sharp)
+              decoration: InputDecorations.authInputDecoration(hintText: 'Email', labelText: 'Correo electronico', prefixIcon: Icons.alternate_email_sharp),
+              validator: (value) {
+                String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                RegExp regExp  = new RegExp(pattern);
+                return regExp.hasMatch(value ?? '')
+                ? null
+                :'Correo invalido';
+
+              },
             ),
             SizedBox(height: 30,),
             TextFormField(
               autocorrect: false,
               obscureText: true,
               obscuringCharacter: '*',
-              decoration: InputDecorations.authInputDecoration(hintText: '****', labelText: 'Contraseña', prefixIcon: Icons.lock)
+              decoration: InputDecorations.authInputDecoration(hintText: '****', labelText: 'Contraseña', prefixIcon: Icons.lock),
+              validator: (value) {
+                return(value!=null && value.length>=6) 
+                ? null
+                : 'La contraseña debe de ser de 6 caracteres';
+
+              },
             ),
+            
             SizedBox(height: 30,),
 
             MaterialButton(
@@ -86,3 +103,8 @@ class _LoginForm extends StatelessWidget {
     );
   }
 }
+
+
+// String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+ 
+// RegExp regExp  = new RegExp(pattern);
