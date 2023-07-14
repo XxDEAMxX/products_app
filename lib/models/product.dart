@@ -13,6 +13,7 @@ class Product {
     String name;
     String? picture;
     double price;
+    String? id;
 
     Product({
         required this.available,
