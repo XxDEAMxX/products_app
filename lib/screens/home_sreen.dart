@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:products_app/screens/screens.dart';
 import 'package:products_app/services/services.dart';
 import 'package:products_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -12,14 +13,16 @@ class HomeScreen extends StatelessWidget {
 
     final productsService = Provider.of<ProductsService>(context);
 
+    if(productsService.isLoading) return LoadingScreen();
+
     return  Scaffold(
       appBar: AppBar(
         title: const Text('productos'),
       ),
       body: ListView.builder(
-        itemCount: 10,
+        itemCount: productsService.product.length,
         itemBuilder: (context, index) => GestureDetector(
-          child: const ProductCard(),
+          child: ProductCard(product: productsService.product[index]),
           onTap: () => Navigator.pushNamed(context, 'product'),
         ),
       ),
