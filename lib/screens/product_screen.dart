@@ -46,7 +46,7 @@ class ProductScreen extends StatelessWidget {
         onPressed: (){
           //TODO: Guardar producto
         },
-        child: Icon(Icons.save_outlined),
+        child: const Icon(Icons.save_outlined),
       ),
     );
   }
