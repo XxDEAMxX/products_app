@@ -10,9 +10,9 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
-        margin: EdgeInsets.only(top: 30, bottom: 50),
+        margin: const EdgeInsets.only(top: 30, bottom: 50),
         width: double.infinity,
         height: 400,
         decoration: _cardBorders(),
@@ -29,12 +29,12 @@ class ProductCard extends StatelessWidget {
               right: 0,
               child: _PriceTitle(product: product,),
             ),
-
-            Positioned(
-              top: 0,
-              left: 0,
-              child: _notAvailable(available: product.available,),
-            )
+            if(!product.available)
+              Positioned(
+                top: 0,
+                left: 0,
+                child: _notAvailable(available: product.available,),
+              )
           ],
         ),
       ),
@@ -45,7 +45,7 @@ class ProductCard extends StatelessWidget {
     return BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(25),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             offset: Offset(0, 7),
@@ -67,18 +67,18 @@ class _notAvailable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: FittedBox(
+      width: 100,
+      height: 70,
+      decoration: const BoxDecoration(
+        color: Colors.orange,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), bottomRight: Radius.circular(25))
+      ),
+      child: const FittedBox(
         fit: BoxFit.contain,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Text(available ? 'Disponible': 'No Disponible', style: TextStyle(color: Colors.white, fontSize: 20),),
+          child: Text('No Disponible' , style: TextStyle(color: Colors.white, fontSize: 20),),
         ),
-      ),
-      width: 100,
-      height: 70,
-      decoration: BoxDecoration(
-        color: Colors.orange,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), bottomRight: Radius.circular(25))
       ),
     );
   }
@@ -95,18 +95,18 @@ class _PriceTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Text('\$${product.price}' , style: TextStyle(color: Colors.white, fontSize: 20), )),
-      ),
       width: 100,
       height: 70,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.indigo,
         borderRadius: BorderRadius.only(topRight: Radius.circular(25), bottomLeft: Radius.circular(25))
+      ),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text('\$${product.price}' , style: const TextStyle(color: Colors.white, fontSize: 20), )),
       ),
     );
   }
@@ -123,9 +123,9 @@ class _productDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(right: 50),
+      padding: const EdgeInsets.only(right: 50),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         width: double.infinity,
         height: 70,
         
@@ -135,13 +135,13 @@ class _productDetails extends StatelessWidget {
           children: [
             Text(
               product.name, 
-              style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold,), 
+              style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold,), 
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             Text(
               product.id!, 
-              style: TextStyle(fontSize: 15, color: Colors.white,)
+              style: const TextStyle(fontSize: 15, color: Colors.white,)
             )
           ],
         ),
@@ -150,7 +150,7 @@ class _productDetails extends StatelessWidget {
   }
 
   BoxDecoration _DataBoxProduct() {
-    return BoxDecoration(
+    return const BoxDecoration(
         color: Colors.indigo,
         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25), topRight: Radius.circular(25))
       );
@@ -172,11 +172,16 @@ class _BackgroundImage extends StatelessWidget {
       child: Container(
         width: double.infinity,
         height: 400,
-        child: FadeInImage(
-          placeholder: AssetImage('assets/jar-loading.gif'),
-          image: NetworkImage(urlImage != null ? urlImage! : 'https://via.placeholder.com/400x300/f6f6f6'),
-          fit: BoxFit.cover
-        ),
+        child: urlImage == null 
+          ? const Image(
+              image: AssetImage('assets/no-image.png'),
+              fit: BoxFit.cover,
+            )
+          : FadeInImage(
+              placeholder: const AssetImage('assets/jar-loading.gif'),
+              image: NetworkImage(urlImage!),
+              fit: BoxFit.cover
+            ),
       ),
     );
   }
