@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 class ProductsService extends ChangeNotifier{
   final String _baseUrl = 'futtler-varios-default-rtdb.firebaseio.com';
   final List<Product> product = [];
+  late Product selectedProduct;
+
   bool isLoading = true;
 
   ProductsService(){

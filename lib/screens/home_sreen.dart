@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
 
     final productsService = Provider.of<ProductsService>(context);
 
-    if(productsService.isLoading) return LoadingScreen();
+    if(productsService.isLoading) return const LoadingScreen();
 
     return  Scaffold(
       appBar: AppBar(
@@ -23,7 +23,10 @@ class HomeScreen extends StatelessWidget {
         itemCount: productsService.product.length,
         itemBuilder: (context, index) => GestureDetector(
           child: ProductCard(product: productsService.product[index]),
-          onTap: () => Navigator.pushNamed(context, 'product'),
+          onTap: () {
+            productsService.selectedProduct = productsService.product[index].copy();
+            Navigator.pushNamed(context, 'product');
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
