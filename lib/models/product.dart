@@ -37,6 +37,8 @@ class Product {
         "price": price,
     };
 
+    String toJson2() => json.encode(toJson());
+
   Product copy() => Product(
     available: available, 
     name: name, 
