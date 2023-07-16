@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:products_app/models/product.dart';
+import 'package:products_app/providers/product_form_provider.dart';
 import 'package:products_app/services/services.dart';
 import 'package:products_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +16,23 @@ class ProductScreen extends StatelessWidget {
 
     print(product.name);
 
+    return ChangeNotifierProvider(
+      create: (context) => ProductFormProvider(product),
+      child: _productScreenBody(product: product),
+    );
+  }
+}
+
+class _productScreenBody extends StatelessWidget {
+  const _productScreenBody({
+    super.key,
+    required this.product,
+  });
+
+  final Product product;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -41,9 +60,9 @@ class ProductScreen extends StatelessWidget {
                 )
               ],
             ),
-
+    
             _ProductForm(),
-
+    
             SizedBox(height: 100,)
           ],
         ),
@@ -60,12 +79,19 @@ class ProductScreen extends StatelessWidget {
 }
 
 class _ProductForm extends StatelessWidget {
+
+  
+
   const _ProductForm({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    final productForm = Provider.of<ProductFormProvider>(context);
+    final product = productForm.product;
+  
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
@@ -77,6 +103,13 @@ class _ProductForm extends StatelessWidget {
             children: [
               const SizedBox(height: 10,),
               TextFormField(
+                initialValue: product.name,
+                onChanged: (value) => product.name = value,
+                validator: (value) {
+                  if( value == null || value.length < 1){
+                    return 'El nombre es obligatorio';
+                  }
+                },
                 decoration: const InputDecoration(
                   hintText: 'Nombre del producto',
                   labelText: 'Nombre',
@@ -85,6 +118,14 @@ class _ProductForm extends StatelessWidget {
               ),
               const SizedBox(height: 30,),
               TextFormField(
+                initialValue: '${product.price}',
+                onChanged: (value) {
+                  if(double.tryParse(value) == null){
+                    product.price = 0;
+                  }else {
+                    product.price = double.parse(value);
+                  }
+                },
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   hintText: '\$150',
@@ -95,7 +136,7 @@ class _ProductForm extends StatelessWidget {
               const SizedBox(height: 30,),
 
               SwitchListTile.adaptive(
-                value: true, 
+                value: product.available, 
                 title: Text('Diponible'),
                 activeColor: Colors.indigo,
                 onChanged: (value) {
