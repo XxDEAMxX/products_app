@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:products_app/models/models.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ProductsService extends ChangeNotifier{
   final String _baseUrl = 'futtler-varios-default-rtdb.firebaseio.com';
@@ -42,7 +43,7 @@ class ProductsService extends ChangeNotifier{
     notifyListeners();
 
     if(product.id == null){
-
+      await createProduct(product);
     }else {
       await updateProduct(product);
     }
@@ -59,6 +60,19 @@ class ProductsService extends ChangeNotifier{
 
     final index = this.product.indexWhere((element) => element.id == product.id);
     this.product[index] = product;
+
+    return product.id!;
+  }
+
+  Future<String> createProduct(Product product) async {
+
+    final url = Uri.https( _baseUrl, 'products.json' );
+    final resp = await http.post( url, body: product.toJson2() );
+    final decodedData = json.decode(resp.body);
+
+    product.id = decodedData['name'];
+
+    this.product.add(product);
 
     return product.id!;
   }
