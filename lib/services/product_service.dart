@@ -57,7 +57,8 @@ class ProductsService extends ChangeNotifier{
     final resp = await http.put( url, body: product.toJson2() );
     final decodedData = resp.body;
 
-    print(decodedData);
+    final index = this.product.indexWhere((element) => element.id == product.id);
+    this.product[index] = product;
 
     return product.id!;
   }
