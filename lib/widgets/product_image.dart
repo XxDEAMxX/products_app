@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class ProductImage extends StatelessWidget {
@@ -18,19 +21,31 @@ class ProductImage extends StatelessWidget {
           opacity: 0.9,
           child: ClipRRect(
             borderRadius: const BorderRadius.only(topLeft: Radius.circular(45), topRight: Radius.circular(45)),
-            child: url == null
-              ? const Image(
-                image: AssetImage('assets/no-image.png'),
-                fit: BoxFit.cover,
-              )
-              : FadeInImage(
-                placeholder: const AssetImage('assets/jar-loading.gif'), 
-                image: NetworkImage(url!),
-                fit: BoxFit.cover,
-              ),
+            child: getImage(url)
           ),
         ),
       ),
+    );
+  }
+
+  Widget getImage(String? picture){
+    if(url == null)
+      return const Image(
+        image: AssetImage('assets/no-image.png'),
+        fit: BoxFit.cover
+      );
+    
+    if(url!.startsWith('http')){
+      return FadeInImage(
+        placeholder: const AssetImage('assets/jar-loading.gif'), 
+        image: NetworkImage(url!),
+        fit: BoxFit.cover,
+      );
+    }
+
+    return Image.file(
+      File(picture!),
+      fit: BoxFit.cover
     );
   }
 
