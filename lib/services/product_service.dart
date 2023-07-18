@@ -89,6 +89,7 @@ class ProductsService extends ChangeNotifier{
 
   Future<String?> uploadImage() async {
     if(newPictureFile == null) return null;
+    
     isSaving = true;
     notifyListeners();
 
