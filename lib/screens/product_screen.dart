@@ -73,8 +73,6 @@ class _productScreenBody extends StatelessWidget {
                         return;
                       }
 
-                      print('Tenemos imagen ${photo.path}');
-
                       productsService.updateSelectedProductImage(photo.path);
 
                     }, 
@@ -95,7 +93,12 @@ class _productScreenBody extends StatelessWidget {
         onPressed: () async {
           if( !productFormProvider.isValidForm()  ) return;
 
+          final String? imageUrl = await productsService.uploadImage();
+
+          print(imageUrl);
+
           await productsService.saveOrCreateProduct(productFormProvider.product);
+
         },
         child: const Icon(Icons.save_outlined),
       ),
